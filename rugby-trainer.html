@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Rugby Trainer" />
+  <title>Rugby Trainings-Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f4f0; min-height: 100vh; padding-bottom: 2rem; }
+    .app { max-width: 480px; margin: 0 auto; padding: 1rem; }
+    .header { background: #1D9E75; color: white; border-radius: 14px; padding: 1.4rem 1.25rem; margin-bottom: 1rem; }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+    .card { background: white; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; }
+    select, input[type=number] {
+      width: 100%; padding: 10px 12px; border: 1px solid #ddd;
+      border-radius: 9px; font-size: 15px; background: #fafafa;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+    input[type=number] { background-image: none; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+    .btn {
+      width: 100%; padding: 14px; background: #1D9E75; color: white;
+      border: none; border-radius: 10px; font-size: 16px; font-weight: 600;
+      cursor: pointer; margin-top: 4px; letter-spacing: 0.2px;
+    }
+    .btn:active { background: #0F6E56; transform: scale(0.99); }
+    .phase-header {
+      font-size: 13px; font-weight: 600; color: #085041;
+      background: #E1F5EE; border-radius: 8px; padding: 7px 11px;
+      margin-bottom: 8px; margin-top: 4px;
+    }
+    .exercise {
+      background: #f7f7f5; border-radius: 10px;
+      padding: 11px 13px; margin-bottom: 8px;
+      border-left: 3px solid #1D9E75;
+    }
+    .exercise-name { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+    .age-tag {
+      font-size: 10px; background: #9FE1CB; color: #04342C;
+      border-radius: 10px; padding: 2px 6px; margin-left: 6px;
+      font-weight: 500; vertical-align: middle;
+    }
+    .exercise-desc { font-size: 13px; color: #555; margin-top: 5px; line-height: 1.55; }
+    .exercise-meta { font-size: 12px; color: #1D9E75; margin-top: 5px; font-weight: 600; }
+    .tip { font-size: 12px; color: #999; font-style: italic; margin-top: 3px; }
+    .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+    .badge {
+      font-size: 12px; padding: 4px 11px; border-radius: 20px;
+      background: #E1F5EE; color: #085041; font-weight: 600;
+    }
+    .new-btn {
+      width: 100%; padding: 12px; background: transparent;
+      border: 1.5px solid #ddd; border-radius: 10px;
+      font-size: 14px; color: #666; cursor: pointer; margin-top: 0.75rem;
+    }
+    .new-btn:active { background: #f0f0f0; }
+    .output { display: none; }
+    .output.visible { display: block; }
+    .count-info { font-size: 12px; color: #aaa; text-align: right; margin-bottom: 8px; }
+    .install-hint {
+      background: #fff8e1; border-radius: 10px; padding: 10px 13px;
+      font-size: 12px; color: #7a5c00; margin-bottom: 1rem;
+      border-left: 3px solid #f0b429;
+      line-height: 1.5;
+    }
+    .install-hint strong { font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>Rugby Trainings-Generator</h1>
+    <p>Kindertraining leicht geplant · 40+ Übungen</p>
+  </div>
+
+  <div class="install-hint">
+    <strong>Tipp: Als App speichern</strong><br>
+    Chrome-Menü (⋮) → "Zum Startbildschirm hinzufügen" – dann startet die App wie eine echte App!
+  </div>
+
+  <div class="card" id="form-card">
+    <div class="row">
+      <div class="field">
+        <label>Altersgruppe</label>
+        <select id="age">
+          <option value="U6">U6 (4–5 J.)</option>
+          <option value="U8" selected>U8 (6–7 J.)</option>
+          <option value="U10">U10 (8–9 J.)</option>
+          <option value="U12">U12 (10–11 J.)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Anzahl Kinder</label>
+        <input type="number" id="kids" value="12" min="4" max="40" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Trainingsdauer</label>
+      <select id="duration">
+        <option value="45">45 Minuten</option>
+        <option value="60" selected>60 Minuten</option>
+        <option value="75">75 Minuten</option>
+        <option value="90">90 Minuten</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Schwerpunkt</label>
+      <select id="focus">
+        <option value="allgemein">Allgemein / gemischt</option>
+        <option value="passen">Passen &amp; Fangen</option>
+        <option value="laufen">Laufen &amp; Ausweichen</option>
+        <option value="teamwork">Teamwork &amp; Spielverständnis</option>
+        <option value="koordination">Koordination &amp; Beweglichkeit</option>
+      </select>
+    </div>
+    <button class="btn" onclick="generatePlan()">Trainingsplan erstellen</button>
+  </div>
+
+  <div class="card output" id="output">
+    <div class="badge-row" id="badges"></div>
+    <div class="count-info" id="count-info"></div>
+    <div id="plan"></div>
+    <button class="new-btn" onclick="resetForm()">↩ Neuen Plan erstellen</button>
+  </div>
+</div>
+
+<script>
+const DB = {
+  warmup: [
+    { name: "Haifisch-Fangen", desc: "Ein Kind ist der Hai und versucht die anderen zu fangen. Wer gefangen wird, wird ebenfalls zum Hai. Das letzte freie Kind gewinnt.", meta: "Kein Material · 5 Min.", tip: "Gut für alle Altersgruppen als Einstieg", ages: ["U6","U8","U10","U12"] },
+    { name: "Zug der Tiere", desc: "Alle Kinder bekommen einen Tiernamen. Wenn der Trainer ein Tier ruft, laufen alle mit diesem Namen zur Mittellinie und zurück.", meta: "Kein Material · 5 Min.", tip: "Viel Gelächter garantiert – ideal für U6/U8", ages: ["U6","U8"] },
+    { name: "Tag-Band-Jagd", desc: "Jedes Kind hat ein Tag-Band hinten am Hosenbund. Ziel: so viele Bänder wie möglich sammeln, ohne das eigene zu verlieren.", meta: "Tag-Bänder · 6 Min.", tip: "Grundlegendes Rugby-Aufwärmen für alle Altersgruppen", ages: ["U6","U8","U10","U12"] },
+    { name: "Formen-Laufen", desc: "Der Trainer ruft eine Form (Kreis, Dreieck, Linie, Schlange). Die Kinder laufen gemeinsam die Form nach. Fördert Raumgefühl und Zuhören.", meta: "Kegel · 5 Min.", tip: "Für U6: nur 2 Formen verwenden", ages: ["U6","U8","U10"] },
+    { name: "Menschenslalom", desc: "6 Kinder bilden eine Kolonne. Die ganze Gruppe joggt zusammen. Das hinterste Kind macht einen Slalom durch alle nach vorne und passt dann den Ball ans nächste hinterste Kind.", meta: "1 Ball · 7 Min.", tip: "Fördert Passsicherheit im Laufen", ages: ["U8","U10","U12"] },
+    { name: "Ball-Jonglage im Kreis", desc: "Alle stehen im Kreis. Ein Ball wird reihum geworfen und gefangen. Tempo langsam steigern. Wer den Ball fallen lässt, macht 3 Hampelmänner.", meta: "1 Ball · 5 Min.", tip: "Variante für U10+: 2 Bälle gleichzeitig", ages: ["U6","U8","U10","U12"] },
+    { name: "Roboter und Mensch", desc: "Die Hälfte der Kinder ist Roboter (steif laufen), die andere Hälfte normale Menschen. Auf Trillerpfeife tauschen alle die Rolle.", meta: "Kein Material · 4 Min.", tip: "Lockert Schultern und Hüfte – guter Einstieg", ages: ["U6","U8"] },
+    { name: "Chinesische Mauer", desc: "Ein bis zwei Fänger stehen in der Mitte. Die anderen versuchen auf die gegenüberliegende Seite zu gelangen. Wer mit beiden Händen an den Hüften berührt wird, wird im nächsten Durchgang Fänger.", meta: "Kein Material · 6 Min.", tip: "Rugby-Variante des 'Schwarzen Mannes'", ages: ["U8","U10","U12"] },
+    { name: "Schnappball Aufwärmen", desc: "Zwei kleine Teams (max. 4v4) versuchen sich den Ball so oft wie möglich zuzupassen. Nach 5 erfolgreichen Pässen gibt es einen Punkt. Gegner versucht den Ball abzufangen.", meta: "1 Ball · 6 Min.", tip: "Fördert Freilaufen und Raumgefühl", ages: ["U8","U10","U12"] },
+    { name: "Magisches Quadrat", desc: "In jede Ecke eines 10x10m Quadrats stellen sich je 2 Kinder. Aus jeder Ecke läuft gleichzeitig ein Kind mit Ball diagonal zur gegenüberliegenden Seite. Kollisionen durch Täuschungen vermeiden.", meta: "Kegel, 4 Bälle · 7 Min.", tip: "Fördert Ausweichen und Reaktion", ages: ["U10","U12"] },
+    { name: "Verfolgungsjagd", desc: "Kind A startet mit 3 Sekunden Vorsprung, Kind B versucht es vor der Ziellinie zu fangen. Fördert Sprintschnelligkeit und Reaktion.", meta: "Kein Material · 5 Min.", tip: "Strecke: U6/U8 = 15m, U10/U12 = 25m", ages: ["U6","U8","U10","U12"] },
+    { name: "Reifenparcours", desc: "Reifen oder Kegelkreise am Boden. Kinder springen, hüpfen oder laufen durch den Parcours in verschiedenen Variationen (beidbeinig, einbeinig, seitwärts).", meta: "Reifen oder Kegel · 6 Min.", tip: "Exzellent für Koordination und Fußarbeit", ages: ["U6","U8","U10","U12"] },
+  ],
+  passen: [
+    { name: "Passen im Kreis", desc: "6 Kinder bilden einen Kreis und passen den Ball reihum: erst rechtsherum, dann linksherum. Für U10+ gleichzeitig mit zwei Bällen.", meta: "1–2 Bälle · 7 Min.", tip: "Einfacher Einstieg ins Passspiel", ages: ["U6","U8","U10","U12"] },
+    { name: "Staffelpassen (Viereck)", desc: "Kinder in 4 Gruppen stellen sich in jede Ecke eines Quadrats. Ball wird gegen den Uhrzeigersinn übergeben: Passer folgt dem Ball zur nächsten Gruppe. Tempo schrittweise steigern.", meta: "1 Ball · 8 Min.", tip: "Grundübung für Passsicherheit", ages: ["U8","U10","U12"] },
+    { name: "Dreieck-Passen", desc: "3 Kinder bilden ein Dreieck mit ca. 3 Metern Abstand. Ball läuft reihum. Nach 1 Minute Richtung wechseln. Füße immer in Bewegung halten.", meta: "1 Ball pro Gruppe · 8 Min.", tip: "Auf Handposition beim Fangen achten", ages: ["U8","U10","U12"] },
+    { name: "Pass und Lauf", desc: "Kind A passt an Kind B, läuft dann schnell nach vorne und bekommt den Ball zurückgespielt. Fördert Timing und Kommunikation. Laut 'Ball!' rufen bevor man den Pass fordert.", meta: "1 Ball pro Paar · 10 Min.", tip: "Ball immer leicht nach hinten passen – Rugby-Regel!", ages: ["U8","U10","U12"] },
+    { name: "Bewegtes Seitpassen", desc: "Kinder laufen nebeneinander. Einer passt seitwärts (Rugby-Pass), der andere fängt im Laufen. Dann Seite wechseln.", meta: "1 Ball pro Paar · 8 Min.", tip: "Wichtig: Ball nie nach vorne passen!", ages: ["U8","U10","U12"] },
+    { name: "Rückpass-Linie", desc: "3 Kinder stehen nebeneinander (ca. 2m Abstand). Der Ballträger beschleunigt und passt zum nächsten. Alle Spieler ohne Ball müssen sich hinter dem Ballträger befinden.", meta: "1 Ball · 8 Min.", tip: "Trainiert korrektes Rückwärtspassen", ages: ["U8","U10","U12"] },
+    { name: "Fang-Staffel", desc: "Zwei Teams in Reihen. Ball wird einmal hin und zurückgepasst. Wer zuerst fertig ist, gewinnt. Betonung auf sauberem Fangen, nicht nur Tempo.", meta: "1 Ball pro Team · 8 Min.", tip: "Fehlerpass = Neustart für dieses Team", ages: ["U8","U10","U12"] },
+    { name: "Pass durch die Lücke", desc: "3 Kinder bilden eine Mauer und halten die Hände hoch. 2 Kinder versuchen durch Pässe eine Lücke zu finden und den Ball durchzuspielen.", meta: "1 Ball · 8 Min.", tip: "Trainiert Lücken-Erkennung", ages: ["U10","U12"] },
+    { name: "Ball-Jonglage zu zweit", desc: "Je 2 Kinder stehen sich gegenüber (5m Abstand). Abwechselnd werfen und fangen. Dann rückwärts laufen während gefangen wird.", meta: "1 Ball pro Paar · 7 Min.", tip: "Für U6: Abstand auf 2–3m reduzieren", ages: ["U6","U8","U10","U12"] },
+  ],
+  laufen: [
+    { name: "Kegel-Slalom mit Ball", desc: "Kegel in einer Linie aufstellen (ca. 1,5m Abstand). Kinder laufen mit Ball im Slalom durch die Kegel. Zurückjoggen, nächstes Kind startet.", meta: "6 Kegel pro Bahn · 8 Min.", tip: "Ball dabei fest mit beiden Händen halten", ages: ["U6","U8","U10","U12"] },
+    { name: "1 gegen 1 Ausweichen", desc: "Zwei Kinder stehen sich gegenüber. Kind mit Ball versucht am anderen vorbeizulaufen. Nur Täuschung erlaubt, kein Körperkontakt. Hüfttäuschung üben.", meta: "1 Ball · 10 Min.", tip: "Für U10/U12 mit Tag-Band kombinieren", ages: ["U8","U10","U12"] },
+    { name: "Breite nutzen", desc: "Kinder laufen von einer Seite zur anderen, immer auf Abstand zueinander. Trainer ruft 'Wechsel!' – alle ändern die Richtung. Wer zuerst die Seitenlinie berührt, gewinnt einen Punkt.", meta: "Kein Material · 8 Min.", tip: "Fördert das Raumgefühl auf dem Spielfeld", ages: ["U8","U10","U12"] },
+    { name: "Try-Line Lauf", desc: "Kinder starten auf einem Ende, laufen mit Ball in der Hand zur Try-Linie und legen den Ball ab. Try-Bewegung einüben: Ball mit beiden Händen auf den Boden legen.", meta: "1 Ball pro Kind · 7 Min.", tip: "Try immer mit beiden Händen ablegen – nie werfen!", ages: ["U6","U8","U10"] },
+    { name: "Verfolgungsduell mit Tag", desc: "Kind A läuft mit Ball, Kind B versucht das Tag-Band zu nehmen. Wenn B das Band hat, Rollenwechsel.", meta: "Tag-Bänder, 1 Ball · 8 Min.", tip: "Für U6: größeres Spielfeld", ages: ["U6","U8","U10","U12"] },
+    { name: "Linienlauf mit Richtungswechsel", desc: "Mehrere Linien im Abstand von 5m. Kinder laufen auf Signal zur nächsten Linie, berühren den Boden und kehren um. Tempo schrittweise steigern.", meta: "Kegel oder Linien · 6 Min.", tip: "Klassisches Konditionsspiel", ages: ["U8","U10","U12"] },
+    { name: "Ball-Träger und Schatten", desc: "Kind A läuft mit Ball irgendwohin. Kind B (das 'Schatten') muss immer in einem Meter Abstand bleiben. Nach 30 Sekunden tauschen. Fördert Unterstützungsläufe.", meta: "1 Ball pro Paar · 7 Min.", tip: "Wichtige Basis für Teamspiel", ages: ["U10","U12"] },
+  ],
+  teamwork: [
+    { name: "Gruppenpass-Rennen", desc: "Teams von 4–5 Kindern laufen gemeinsam zum Ziel und passen dabei den Ball weiter. Kein Kind darf zweimal hintereinander den Ball haben.", meta: "1 Ball pro Team · 10 Min.", tip: "Laut rufen wer den Ball als nächstes bekommt", ages: ["U8","U10","U12"] },
+    { name: "2 gegen 1", desc: "2 Angreifer mit Ball gegen 1 Verteidiger (Tag-Rugby). Angreifer versuchen am Verteidiger vorbeizukommen durch Passen oder Laufen. Grundsituation im Rugby.", meta: "Tag-Bänder, 1 Ball · 10 Min.", tip: "Häufigste Situation im echten Spiel", ages: ["U8","U10","U12"] },
+    { name: "Touch Rugby", desc: "Ball darf so lange getragen werden, bis der Ballträger mit beiden Händen an den Hüften berührt wird. Dann muss der Ball sofort abgespielt werden. Nur der Ballträger darf angegriffen werden.", meta: "1 Ball · 12 Min.", tip: "Gute Einführung ins Spielverständnis", ages: ["U8","U10","U12"] },
+    { name: "Mini-Spiel 3 gegen 3", desc: "Kleines Spielfeld, 3 gegen 3. Tor durch Ablegen des Balls hinter der Linie. Kein Tackling, nur Tag-Rugby. Fokus: Ball bewegen und Lücken finden.", meta: "Kegel als Torpfosten · 12 Min.", tip: "Trainer lobt gutes Passen, nicht nur Tore", ages: ["U8","U10","U12"] },
+    { name: "Menschenkette", desc: "Alle Kinder stehen in einer langen Reihe und halten sich an den Händen. Erste Person führt die Kette in verschiedene Formen. Fördert Zusammenarbeit.", meta: "Kein Material · 6 Min.", tip: "Gut für U6/U8 als sanfte Teamübung", ages: ["U6","U8"] },
+    { name: "Verteidigungs-Linie", desc: "3 Kinder bilden eine Verteidigungslinie (1m Abstand). 3 Angreifer versuchen mit Pässen durch die Linie zu spielen. Verteidiger dürfen nur seitwärts laufen.", meta: "1 Ball · 10 Min.", tip: "Trainiert Raumdeckung und Kommunikation", ages: ["U10","U12"] },
+    { name: "Try-Schnappball", desc: "2 Teams spielen gegeneinander. Ball darf nur nach hinten gepasst werden. Wer den Ball über die Linie trägt, macht einen Try. Kein Körperkontakt.", meta: "1 Ball · 12 Min.", tip: "Einfachste Form des Tag-Rugby-Spiels", ages: ["U6","U8","U10"] },
+    { name: "Unterstützungslauf", desc: "Kind mit Ball läuft nach vorne. Teamkameraden sollen immer auf gleicher Höhe neben dem Ballträger bleiben – bereit für den Pass. Trainer pfeift: sofortiger Pass.", meta: "1 Ball pro Gruppe · 8 Min.", tip: "Grundprinzip Rugby: nie hinter dem Ballträger bleiben", ages: ["U10","U12"] },
+  ],
+  koordination: [
+    { name: "Hütchen-Parcours", desc: "Verschiedene Stationen: Slalom, Seitwärtsschritte, Rückwärtslaufen, Sprünge über Kegel. Kinder durchlaufen den Parcours einzeln. Jede Runde etwas schneller.", meta: "8 Kegel · 10 Min.", tip: "Stationen je nach Alter anpassen", ages: ["U6","U8","U10","U12"] },
+    { name: "Ball-Balancieren", desc: "Kinder balancieren den Rugby-Ball auf dem Handrücken und gehen durch einen Parcours. Wer den Ball fallen lässt, startet neu.", meta: "1 Ball pro Kind · 7 Min.", tip: "Rugby-Bälle sind oval – das macht es extra schwierig!", ages: ["U6","U8","U10"] },
+    { name: "Reaktionsspiel mit Farben", desc: "Trainer hält farbige Kegel hoch: rot = stehen, grün = laufen, gelb = hüpfen, blau = rückwärtslaufen. Wer falsch reagiert, macht 2 Liegestütze.", meta: "Farbige Kegel · 8 Min.", tip: "Tempo langsam steigern", ages: ["U8","U10","U12"] },
+    { name: "Hampelmann-Variationen", desc: "Trainer zeigt verschiedene Variationen: normaler Hampelmann, mit Klatschen, mit Ball in der Hand, mit Kreuzschritten. Kinder machen nach.", meta: "Optional: Ball · 5 Min.", tip: "Fördert Rhythmusgefühl", ages: ["U6","U8"] },
+    { name: "Reifenspringen mit Ball", desc: "Reifen auf dem Boden auslegen. Kinder springen durch die Reifen und tragen dabei den Ball unter dem Arm. Am Ende: Pass an Trainer.", meta: "6 Reifen, 1 Ball · 8 Min.", tip: "Verbindet Koordination mit rugbyspezifischem Ballhalten", ages: ["U8","U10","U12"] },
+    { name: "Krabbenrennen", desc: "Kinder gehen im Krabbengang (Rücken zum Boden, auf Händen und Füßen) von einer Linie zur anderen. Optional: Ball zwischen die Knie klemmen.", meta: "Optional: Ball · 5 Min.", tip: "Kräftigt Rumpf und Schultern – viel Spaß!", ages: ["U6","U8","U10"] },
+    { name: "Rollball", desc: "Kinder rollen den Ball auf dem Boden vor sich her und laufen ihm hinterher. Dann: Ball aufheben, 3 Schritte laufen, wieder rollen.", meta: "1 Ball pro Kind · 6 Min.", tip: "Wichtige Rugby-Basis: Ball sicher vom Boden aufnehmen", ages: ["U6","U8"] },
+    { name: "Koordinationsleiter (imitiert)", desc: "Mit Kegeln eine Leiter auf dem Boden markieren. Kinder gehen verschiedene Schrittvarianten: vorwärts, seitwärts, Kreuzschritt, Karaoke.", meta: "12 Kegel · 8 Min.", tip: "Ersetzt echte Koordinationsleiter – genauso effektiv", ages: ["U10","U12"] },
+  ],
+  allgemein: [
+    { name: "Ball-Staffellauf", desc: "Zwei Teams laufen abwechselnd mit Ball zur Linie und zurück. Übergabe durch einen sauberen Pass – nicht per Handübergabe.", meta: "1 Ball pro Team · 8 Min.", tip: "Fehlerpass = Neustart für den Läufer", ages: ["U8","U10","U12"] },
+    { name: "Spiel ohne Grenzen", desc: "Freies Spiel mit Rugby-Ball. Kinder entdecken selbst wie der Ball rollt, springt und fliegt. Keine festen Regeln – nur Spaß.", meta: "1 Ball pro 3 Kinder · 8 Min.", tip: "Besonders wichtig für U6 – Begeisterung wecken!", ages: ["U6","U8"] },
+    { name: "Fangen mit Ball", desc: "Normales Fangen-Spiel, aber wer den Ball hat, kann nicht gefangen werden. Ball kann jederzeit gepasst werden.", meta: "1–2 Bälle · 8 Min.", tip: "Rugby-Grundprinzip spielerisch erleben", ages: ["U6","U8","U10"] },
+    { name: "Tag-Rugby Basisübung", desc: "2 gegen 1: Zwei Angreifer mit Ball gegen einen Verteidiger. Angreifer versuchen vorbeizukommen. Verteidiger versucht das Tag-Band zu nehmen.", meta: "Tag-Bänder, 1 Ball · 10 Min.", tip: "Grundsituation im Rugby – immer wieder üben", ages: ["U8","U10","U12"] },
+    { name: "Try-Wettbewerb", desc: "Ball aufnehmen, Slalom durch 3 Kegel, Try ablegen. Zeit stoppen. Wer schafft den schnellsten Try? Fördert alle Grundbewegungen.", meta: "Kegel, 1 Ball · 10 Min.", tip: "Try nur bei korrekter Technik zählen", ages: ["U6","U8","U10","U12"] },
+    { name: "Freies Tauschspiel", desc: "Kinder laufen frei auf dem Feld. Wer einen Ball hat, kann ihn jederzeit weiterpassen. Niemand darf länger als 5 Sekunden den Ball halten.", meta: "3–4 Bälle · 8 Min.", tip: "Fördert Übersicht und spontanes Passen", ages: ["U8","U10","U12"] },
+  ],
+  cooldown: [
+    { name: "Wer hat den Ball?", desc: "Alle sitzen im Kreis. Ein Ball wird heimlich weitergegeben (Hände hinter dem Rücken). Ein Kind in der Mitte muss raten, wer den Ball hat.", meta: "1 Ball · 5 Min.", tip: "Bringt alle zur Ruhe – ideal als letztes Spiel", ages: ["U6","U8","U10","U12"] },
+    { name: "Dehn-Kreis", desc: "Alle stehen im Kreis. Ein Kind zeigt eine Dehnübung, alle machen nach. Reihum bis jedes Kind dran war.", meta: "Kein Material · 5 Min.", tip: "Kinder fühlen sich verantwortlich", ages: ["U6","U8","U10","U12"] },
+    { name: "Mannschaftsjubel", desc: "Alle kommen in die Mitte, Hände übereinander. Zusammen laut einen Mannschaftsruf. Gibt Zusammengehörigkeitsgefühl.", meta: "Kein Material · 3 Min.", tip: "Mannschaftsnamen oder Schlachtruf einbauen!", ages: ["U6","U8","U10","U12"] },
+    { name: "Feedback-Runde", desc: "Jedes Kind sagt kurz: 'Was hat mir heute Spaß gemacht?' Trainer gibt kurzes Lob für die Gruppe.", meta: "Kein Material · 5 Min.", tip: "Immer positiv beenden!", ages: ["U8","U10","U12"] },
+    { name: "Rugby-Quiz", desc: "Trainer stellt einfache Rugby-Fragen. Wer die Hand zuerst hebt und richtig antwortet, bekommt einen Punkt.", meta: "Kein Material · 5 Min.", tip: "Fragen altersgerecht stellen", ages: ["U8","U10","U12"] },
+    { name: "Stille Schlange", desc: "Alle bilden eine Schlange. Jedes Kind legt die Hände auf die Schultern des Vordermanns und gibt eine sanfte Massage. Dann umdrehen.", meta: "Kein Material · 4 Min.", tip: "Fördert Entspannung und Respekt", ages: ["U8","U10","U12"] },
+  ]
+};
+
+function filterByAge(arr, age) { return arr.filter(e => e.ages.includes(age)); }
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+function pick(arr, n) { return shuffle(arr).slice(0, n); }
+
+function generatePlan() {
+  const age = document.getElementById('age').value;
+  const kids = parseInt(document.getElementById('kids').value);
+  const duration = parseInt(document.getElementById('duration').value);
+  const focus = document.getElementById('focus').value;
+
+  const warmupMins = Math.round(duration * 0.2);
+  const mainMins = Math.round(duration * 0.6);
+  const coolMins = duration - warmupMins - mainMins;
+  const mainCount = duration >= 75 ? 3 : 2;
+
+  const warmupPool = filterByAge(DB.warmup, age);
+  const coolPool = filterByAge(DB.cooldown, age);
+  let mainPool = focus === 'allgemein'
+    ? [...filterByAge(DB.passen, age), ...filterByAge(DB.laufen, age), ...filterByAge(DB.allgemein, age)]
+    : filterByAge(DB[focus] || DB.allgemein, age);
+
+  const warmupEx = pick(warmupPool, 2);
+  const mainEx = pick(mainPool, mainCount);
+  const coolEx = pick(coolPool, 2);
+
+  const groupNote = kids <= 8 ? '(alle gemeinsam)' :
+    kids <= 16 ? `(${Math.ceil(kids/4)} Gruppen à 4 Kinder)` :
+    `(${Math.ceil(kids/5)} Gruppen à 5 Kinder)`;
+
+  const focusLabel = { allgemein:'Allgemein', passen:'Passen & Fangen', laufen:'Laufen & Ausweichen', teamwork:'Teamwork', koordination:'Koordination' }[focus];
+
+  document.getElementById('badges').innerHTML =
+    `<span class="badge">${age}</span><span class="badge">${kids} Kinder</span><span class="badge">${duration} Min</span><span class="badge">${focusLabel}</span>`;
+
+  const total = warmupPool.length + mainPool.length + coolPool.length;
+  document.getElementById('count-info').textContent =
+    `${warmupEx.length + mainEx.length + coolEx.length} Übungen aus ${total} verfügbaren für ${age}`;
+
+  const renderEx = e => `
+    <div class="exercise">
+      <div class="exercise-name">${e.name}<span class="age-tag">${e.ages.join(' ')}</span></div>
+      <div class="exercise-desc">${e.desc}</div>
+      <div class="exercise-meta">${e.meta}</div>
+      <div class="tip">${e.tip}</div>
+    </div>`;
+
+  document.getElementById('plan').innerHTML = `
+    <div class="phase-header">Aufwärmen · ca. ${warmupMins} Min · ${groupNote}</div>
+    ${warmupEx.map(renderEx).join('')}
+    <div class="phase-header">Hauptteil · ca. ${mainMins} Min · ${focusLabel}</div>
+    ${mainEx.map(renderEx).join('')}
+    <div class="phase-header">Abkühlen &amp; Abschluss · ca. ${coolMins} Min</div>
+    ${coolEx.map(renderEx).join('')}
+  `;
+
+  document.getElementById('form-card').style.display = 'none';
+  document.getElementById('output').classList.add('visible');
+  window.scrollTo(0, 0);
+}
+
+function resetForm() {
+  document.getElementById('output').classList.remove('visible');
+  document.getElementById('form-card').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
